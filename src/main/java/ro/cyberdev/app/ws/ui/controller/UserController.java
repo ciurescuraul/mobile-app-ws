@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ro.cyberdev.app.ws.ui.model.request.UpdateUserDetailsRequestModel;
 import ro.cyberdev.app.ws.ui.model.request.UserDetailsRequestModel;
 import ro.cyberdev.app.ws.ui.model.response.UserRest;
 
@@ -39,11 +40,11 @@ public class UserController {
                     MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
 
-      if (users.containsKey(userId)) {
-                return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
+        if (users.containsKey(userId)) {
+            return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @PostMapping(
@@ -70,9 +71,25 @@ public class UserController {
         return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
     }
 
-    @PutMapping
-    public String updateUser() {
-        return "update user was called";
+    @PutMapping(path = "/{userId}",
+            consumes = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE},
+            produces = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE}
+    )
+    public ResponseEntity<UserRest> updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserDetailsRequestModel updateUserDetails) {
+
+        // Get the user from the HashMap
+        UserRest storedUserDetails = users.get(userId);
+
+        // Update existing user details
+        storedUserDetails.setFirstName(updateUserDetails.getFirstName());
+        storedUserDetails.setLastName(updateUserDetails.getLastName());
+
+        // Return the updated user
+        return new ResponseEntity<UserRest>(storedUserDetails, HttpStatus.OK);
     }
 
     @DeleteMapping

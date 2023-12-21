@@ -9,7 +9,7 @@ This document provides information on the CRUD operations for managing users in 
 1. [Project Structure](#project-structure)
 2. [API Endpoints](#api-endpoints)
    1. [Create User](#21-create-user)
-   2. [Read User](#22-get-user)
+   2. [Get User](#22-get-user)
    3. [Update User](#23-update-user)
    4. [Delete User](#24-delete-user)
 3. [Conclusion](#conclusion)

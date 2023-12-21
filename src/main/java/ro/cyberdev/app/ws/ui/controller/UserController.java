@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ro.cyberdev.app.ws.exceptions.UserServiceException;
 import ro.cyberdev.app.ws.ui.model.request.UpdateUserDetailsRequestModel;
 import ro.cyberdev.app.ws.ui.model.request.UserDetailsRequestModel;
 import ro.cyberdev.app.ws.ui.model.response.UserRest;
@@ -40,9 +41,7 @@ public class UserController {
                     MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
 
-//        String firstName = null;
-//
-//        int firstNameLength = firstName.length();
+//        if (true) throw new UserServiceException("A UserServiceException is thrown");
 
         if (users.containsKey(userId)) {
             return new ResponseEntity<>(users.get(userId), HttpStatus.OK);

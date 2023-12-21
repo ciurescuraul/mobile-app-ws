@@ -2,9 +2,11 @@ package ro.cyberdev.app.ws.userService;
 
 import org.springframework.stereotype.Service;
 import ro.cyberdev.app.ws.shared.Utils;
+import ro.cyberdev.app.ws.ui.model.request.UpdateUserDetailsRequestModel;
 import ro.cyberdev.app.ws.ui.model.request.UserDetailsRequestModel;
 import ro.cyberdev.app.ws.ui.model.response.UserRest;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,10 +32,36 @@ public class UserServiceImpl implements UserService {
         String userId = utils.generateUserId();
         returnValue.setUserId(userId);
 
-        // Store the user in a HashMap
         if (users == null) users = new HashMap<>();
         users.put(userId, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public UserRest getUser(String userId) {
+        return users.getOrDefault(userId, null);
+    }
+
+    @Override
+    public Collection<UserRest> getAllUsers() {
+        return users.values();
+    }
+
+    @Override
+    public UserRest updateUser(String userId, UpdateUserDetailsRequestModel userDetails) {
+        // Get the user from the HashMap
+        UserRest storedUserDetails = users.get(userId);
+
+        // Update existing user details
+        storedUserDetails.setFirstName(userDetails.getFirstName());
+        storedUserDetails.setLastName(userDetails.getLastName());
+
+        return storedUserDetails;
+    }
+
+    @Override
+    public void deleteUser(String id) {
+        this.users.remove(id);
     }
 }

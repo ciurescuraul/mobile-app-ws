@@ -18,6 +18,7 @@ import ro.cyberdev.app.ws.ui.model.request.UserDetailsRequestModel;
 import ro.cyberdev.app.ws.ui.model.response.UserRest;
 import ro.cyberdev.app.ws.userService.UserService;
 
+import java.util.Collection;
 import java.util.Map;
 
 @RestController
@@ -31,10 +32,13 @@ public class UserController {
     }
 
     @GetMapping
-    public String getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
-                           @RequestParam(value = "limit", defaultValue = "50") int limit,
-                           @RequestParam(value = "sort", defaultValue = "desc", required = false) String sort) {
-        return "get users was called page = " + page + " and limit = " + limit + " and sort = " + sort;
+    public ResponseEntity<Collection<UserRest>> getAllUsers(@RequestParam(value = "page", defaultValue = "1") int page,
+                                                  @RequestParam(value = "limit", defaultValue = "50") int limit,
+                                                  @RequestParam(value = "sort", defaultValue = "desc", required = false) String sort) {
+        Collection<UserRest> users = userService.getAllUsers();
+
+        return new ResponseEntity<Collection<UserRest>>(users, HttpStatus.OK);
+//        return "get users was called page = " + page + " and limit = " + limit + " and sort = " + sort;
     }
 
     @GetMapping(path = "/{userId}",
@@ -42,11 +46,11 @@ public class UserController {
                     MediaType.APPLICATION_XML_VALUE,
                     MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-
-        if (users.containsKey(userId)) {
-            return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
+        UserRest user = userService.getUser(userId);
+        if (user != null) {
+            return new ResponseEntity<UserRest>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<UserRest>(HttpStatus.NO_CONTENT);
         }
     }
 
@@ -76,21 +80,17 @@ public class UserController {
             @PathVariable String userId,
             @Valid @RequestBody UpdateUserDetailsRequestModel updateUserDetails) {
 
-        // Get the user from the HashMap
-        UserRest storedUserDetails = users.get(userId);
-
-        // Update existing user details
-        storedUserDetails.setFirstName(updateUserDetails.getFirstName());
-        storedUserDetails.setLastName(updateUserDetails.getLastName());
+        UserRest userRest = userService.updateUser(userId, updateUserDetails);
 
         // Return the updated user
-        return new ResponseEntity<UserRest>(storedUserDetails, HttpStatus.OK);
+        return new ResponseEntity<UserRest>(userRest, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
 
-        this.users.remove(id);
+        userService.deleteUser(id);
+
         return ResponseEntity.noContent().build();
     }
 }

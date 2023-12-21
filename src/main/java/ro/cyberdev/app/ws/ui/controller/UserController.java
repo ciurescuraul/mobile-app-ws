@@ -25,7 +25,7 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController {
 
-    Map<String, UserRest> users;
+    private Map<String, UserRest> users;
 
     @GetMapping
     public String getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -92,8 +92,10 @@ public class UserController {
         return new ResponseEntity<UserRest>(storedUserDetails, HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public String deleteUser() {
-        return "delete user was called";
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+
+        this.users.remove(id);
+        return ResponseEntity.noContent().build();
     }
 }

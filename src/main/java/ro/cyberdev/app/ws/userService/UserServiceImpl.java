@@ -1,27 +1,33 @@
 package ro.cyberdev.app.ws.userService;
 
 import org.springframework.stereotype.Service;
+import ro.cyberdev.app.ws.shared.Utils;
 import ro.cyberdev.app.ws.ui.model.request.UserDetailsRequestModel;
 import ro.cyberdev.app.ws.ui.model.response.UserRest;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     Map<String, UserRest> users;
+    private final Utils utils;
+
+    public UserServiceImpl(Utils utils) {
+        this.utils = utils;
+    }
 
     @Override
     public UserRest createUser(UserDetailsRequestModel userDetails) {
-        // Generate a random UUID
-        String userId = String.valueOf(UUID.randomUUID());
 
         UserRest returnValue = new UserRest();
         returnValue.setFirstName(userDetails.getFirstName());
         returnValue.setLastName(userDetails.getLastName());
         returnValue.setEmail(userDetails.getEmail());
+
+        // Generate a random UUID
+        String userId = utils.generateUserId();
         returnValue.setUserId(userId);
 
         // Store the user in a HashMap

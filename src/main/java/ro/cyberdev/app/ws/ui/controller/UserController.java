@@ -43,6 +43,9 @@ public class UserController {
 
 //        if (true) throw new UserServiceException("A UserServiceException is thrown");
 
+//        String firstName = null;
+//        int firstNameLength = firstName.length();
+
         if (users.containsKey(userId)) {
             return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
         } else {
